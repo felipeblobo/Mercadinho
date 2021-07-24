@@ -3,6 +3,7 @@ package br.com.mercadinho.Mercadinho.Controller;
 import br.com.mercadinho.Mercadinho.Model.Product;
 import br.com.mercadinho.Mercadinho.Repository.ProductRepository;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,18 @@ public class ProductController {
     }
 
     @PatchMapping("/products/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody Product product ) {
-        return repository.save(product);
+    public HttpEntity<? extends Object> updateProduct(@PathVariable Long id, @RequestBody Product newProduct ) {
+        Optional<Product> oldProduct = repository.findById(id);
+        if(oldProduct.isPresent()) {
+            Product product = oldProduct.get();
+            product.setDescription(newProduct.getDescription());
+            product.setProvider(newProduct.getProvider());
+            product.setPrice(newProduct.getPrice());
+            return new ResponseEntity<Product>(product, HttpStatus.OK);
+
+        }
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 
