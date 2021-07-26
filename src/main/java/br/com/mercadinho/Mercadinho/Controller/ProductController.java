@@ -17,22 +17,22 @@ public class ProductController {
 
     ProductRepository repository;
 
-    @GetMapping("/products")
+    @GetMapping("/product")
     public List<Product> getProducts(){
         return repository.findAll();
     }
 
-    @GetMapping("products/{id}")
+    @GetMapping("product/{id}")
     public Optional<Product> getProductById(@PathVariable Long id) {
         return repository.findById(id);
     }
 
-    @PostMapping("/products")
+    @PostMapping("/product")
     public ResponseEntity<Product> saveProduct(@RequestBody Product product){
         return new ResponseEntity<>(repository.save(product), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/products/{id}")
+    @PatchMapping("/product/{id}")
     public HttpEntity<? extends Object> updateProduct(@PathVariable Long id, @RequestBody Product newProduct ) {
         Optional<Product> oldProduct = repository.findById(id);
         if(oldProduct.isPresent()) {
@@ -41,14 +41,13 @@ public class ProductController {
             product.setProvider(newProduct.getProvider());
             product.setPrice(newProduct.getPrice());
             return new ResponseEntity<Product>(product, HttpStatus.OK);
-
         }
         else
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
     }
 
-    @DeleteMapping("/products/{id}")
+    @DeleteMapping("/product/{id}")
     public ResponseEntity<Long> deleteProduct(@PathVariable Long id){
         repository.deleteById(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
